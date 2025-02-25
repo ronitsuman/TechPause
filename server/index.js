@@ -1,8 +1,8 @@
 import express from "express";
 import dbConnect from "./database/dbConnect.js";
 import cors from "cors";
-import {Route }from "./Routes/users.route.js";
 import env from "dotenv"
+import {Route} from "./Routes/users.route.js"
 
 
 env.config(); // to use env variables
@@ -12,7 +12,7 @@ const PORT = process.env.PORT ||5000;
 
 
 
-// Database Connection & Server Start
+// Database Connection & Server Start 
 (async () => {
     try {
         await dbConnect();
