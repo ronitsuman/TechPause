@@ -61,7 +61,7 @@ const SignUp = () => {
       // API End pont Karo
       const response = 
       await axios.post(
-        // "http://localhost:3000/api/products/add",
+        "http://localhost:3000/api/signup",
         formData
       );
 
@@ -171,6 +171,23 @@ const SignUp = () => {
             <option value="others">Other</option>
           </select>
         </div>
+           {/* Collapsible instruction button */}
+           <button
+            type="button"
+            className="text-sm text-blue-500 underline w-fit mt-1"
+            onClick={() => setShowCatInstr(!showCatInstr)}
+          >
+            Need help selecting a category?
+          </button>
+
+          {/* Collapsible instruction text */}
+          {showCatInstr && (
+            <p className="text-gray-600 text-sm mt-1">
+              This category is your main writing focus. You can see all blog
+              posts, but can only post in your chosen category for now.
+              You can change it later in your profile settings.
+            </p>
+          )}
 
         {/* Password */}
         <div className="md:flex md:flex-col gap-1 md:w-[307px] lg:w-[397px]">

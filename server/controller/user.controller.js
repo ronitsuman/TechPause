@@ -12,7 +12,7 @@ const signupController = async(req,res)=>{
 
     const existingUser = await User.findOne({email});
 
-    if(existingUser.length > 0){
+    if(existingUser){
         return res.status(400).json({message:"email already exists"})
     }
 
