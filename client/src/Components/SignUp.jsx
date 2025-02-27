@@ -1,7 +1,7 @@
 import { useState } from "react";
 import axios from "axios"; // Axios import
 
-const SignUp = () => {
+const SignUp = ( {onSignupSuccess }) => {
   const [showCatInstr, setShowCatInstr] = useState(false);
   const [formData, setFormData] = useState({
     name: "",
@@ -12,7 +12,9 @@ const SignUp = () => {
   });
 
   const [errors, setErrors] = useState({});
-  const [isSubmitting, setIsSubmitting] = useState(false); // API request ke time button disable karne ke liye
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [showPopup,setShowPopup]=useState(false)
+   // API request ke time button disable karne ke liye
 
   // Regex Patterns
   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -65,8 +67,10 @@ const SignUp = () => {
         formData
       );
 
-      alert("User Registered Successfully!");
+      
       console.log("Server Response:", response.data);
+      setShowPopup(true)
+
 
       // ✅ Form Reset
       setFormData({
@@ -83,6 +87,8 @@ const SignUp = () => {
       setIsSubmitting(false); //  Button wapas enable karne ke liye
     }
   };
+
+  
 
   // Handle Form Submission
   const handleSubmit = (e) => {
@@ -225,6 +231,25 @@ const SignUp = () => {
           {isSubmitting ? "Processing..." : "Create an Account"}
         </button>
       </form>
+      {/* email confirmation pop up  */}
+      {showPopup && (
+         <div className="fixed top-0 left-0 w-full h-full flex items-center justify-center bg-black bg-opacity-50">
+         <div className="bg-white p-6 rounded-lg text-center">
+           <h2 className="text-lg font-bold">Confirm Your Email</h2>
+           <p>Please check your email for a confirmation link.</p>
+           <button
+             onClick={() => 
+              {setShowPopup(false);
+              onSignupSuccess();}}
+             className="mt-4 bg-blue-500 text-white px-4 py-2 rounded-lg"
+           >
+             OK
+           </button>
+         </div>
+       </div>
+     )}
+
+      
     </div>
   );
 };

@@ -6,6 +6,10 @@ import Login from "../Components/Login";
 const Auth = () => {
   const [isLogin, setIsLogin] = useState(false);
 
+  const handleSignupSuccess =()=>{
+    setIsLogin(true)
+  }
+
   return (
     <div className="min-h-screen flex justify-center items-center bg-gray-900">
       {/* Main container */}
@@ -68,7 +72,7 @@ const Auth = () => {
                 exit={{ opacity: 0, x: 50 }}
                 transition={{ duration: 0.6, ease: "easeInOut" }}
               >
-                <SignUp />
+                <SignUp onSignupSuccess={handleSignupSuccess} />
               </motion.div>
             )}
           </AnimatePresence>

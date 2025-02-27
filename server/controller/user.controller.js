@@ -47,7 +47,7 @@ const signupController = async(req,res)=>{
         confirmationEmailTemplate.replace("{name}",name ).replace
         ("{link}",`http://localhost:3000/api/verify-email/${id}/${savedMailToken}`) );
     
-    res.status(200).json({message:"user created successfully"}
+    res.status(200).json({message:"user created successfully",success:true,}
         );
     
    } catch (error) {
@@ -71,7 +71,8 @@ const verifyEmailController = async(req,res)=>{
         user.emailToken = null;
         user.isVerified = true;
         await user.save();
-        res.status(200).json({message:"Email verified successfully"});
+        res.status(200).json({message:"Email verified successfully Now You Can Sign In"});
+        
         console.log("user",user,"id verified",id,token);
         
     }
