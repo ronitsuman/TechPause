@@ -23,7 +23,12 @@ const userSchema = new mongoose.Schema(
         category:{
             type:String,
             required:[true, "category is required field"]
-        }
+        },
+        isVerified:{type:Boolean,
+            default:false},
+        emailToken:{type:String,
+            default:null
+        },
     },
     {timestamps:true});
 
