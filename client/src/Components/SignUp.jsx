@@ -1,7 +1,7 @@
 import { useState } from "react";
 import axios from "axios"; // Axios import
 
-const SignUp = ( {onSignupSuccess }) => {
+const SignUp = ( { onSignupSuccess }) => {
   const [showCatInstr, setShowCatInstr] = useState(false);
   const [formData, setFormData] = useState({
     name: "",
@@ -97,7 +97,7 @@ const SignUp = ( {onSignupSuccess }) => {
   };
 
   return (
-    <div className="p-4  w-[470px] md:w-[420px] md:gap-1 md:mt-[-45px] md:p-16 md:item-center md:justify-center md:flex md:flex-col text-black">
+    <div className="p-4 bg-[#fcf2f8] w-[470px] md:w-[420px] md:gap-1 md:mt-[-45px] md:p-16 md:item-center md:justify-center md:flex md:flex-col text-black">
       <h1 className="text-3xl">Create an account</h1>
       <p className="">Provide your details.</p>
       <form action="" className="flex flex-col gap-2" onSubmit={handleSubmit}>

@@ -1,14 +1,21 @@
 import { motion, AnimatePresence } from "framer-motion";
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { useSearchParams } from "react-router-dom";
 import SignUp from "../Components/SignUp";
 import Login from "../Components/Login";
 
 const Auth = () => {
-  const [isLogin, setIsLogin] = useState(false);
+  const [searchParams] = useSearchParams();
+  const isLoginParam = searchParams.get("type") === "login";
+  const [isLogin, setIsLogin] = useState(isLoginParam);
 
-  const handleSignupSuccess =()=>{
-    setIsLogin(true)
-  }
+  useEffect(() => {
+    setIsLogin(isLoginParam);
+  }, [isLoginParam]);
+
+  const handleSignupSuccess = () => {
+    setIsLogin(true);
+  };
 
   return (
     <div className="min-h-screen flex justify-center items-center bg-gray-900">
@@ -21,34 +28,23 @@ const Auth = () => {
       >
         {/* Image Section (Hidden on Mobile) */}
         <motion.div
-  className="hidden md:flex w-1/2 bg-blue-600 items-center justify-center"
-  initial={{ opacity: 0, x: isLogin ? 100 : -200 }}
-  animate={{ opacity: 1, x: 0 }}
-  transition={{ duration: 3.5, ease: "easeInOut" }}
->
-  {/* Floating Image Effect */}
-  <motion.img
-    src={"/new.jpeg"}
-    alt="Auth Illustration"
-    className="w-full h-auto object-cover"
-    animate={{
-      y: [0, -15, 0], // 15px upar fir wapas neeche
-    }}
-    transition={{
-      duration: 2.5, // 2.5 sec ka ek loop hoga
-      repeat: 1, // Infinite loop me chalega
-      repeatType: "mirror", // Forward aur backward dono direction me move karega
-      ease: "easeInOut", // Smooth easing effect
-    }}
-  />
-</motion.div>
-
-
-
+          className="hidden md:flex w-1/2 bg-[#fcf2f8] items-center justify-center"
+          initial={{ opacity: 0, x: isLogin ? 100 : -200 }}
+          animate={{ opacity: 1, x: 0 }}
+          transition={{ duration: 3.5, ease: "easeInOut" }}
+        >
+          <motion.img
+            src={"/new.jpeg"}
+            alt="Auth Illustration"
+            className="w-full h-auto object-cover"
+            animate={{ y: [0, -15, 0] }}
+            transition={{ duration: 2.5, repeat: 1, repeatType: "mirror", ease: "easeInOut" }}
+          />
+        </motion.div>
 
         {/* Form Section */}
         <motion.div
-          className="w-full bg-[#badeff] sm:w-1/2 p-8 flex flex-col justify-center relative"
+          className="w-full bg-[#fcf2f8] sm:w-1/2 p-8 flex flex-col justify-center relative"
           initial={{ x: isLogin ? -100 : 200 }}
           animate={{ x: 0 }}
           transition={{ duration: 3.5, ease: "easeInOut" }}

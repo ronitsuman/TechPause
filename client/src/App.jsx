@@ -1,5 +1,6 @@
 import {createBrowserRouter, RouterProvider} from "react-router-dom"
 import Auth from "./Pages/Auth"
+import EntryPortal from "./Pages/EntryPortal"
 
 
 
@@ -8,16 +9,16 @@ const App = () => {
   const router = createBrowserRouter([
     {
       path:"/",
+      element:<><EntryPortal/></>
+    },
+    {
+      path:"/auth",
       element:<><Auth/></>
+
     },
     // {
-    //   path:"/login",
-    //   element:<><Login/></>
-
-    // },
-    // {
-    //   path:"/signup",
-    //   element:<><SignUp/></>
+    //   path:"/mailverify",
+    //   element:<> </>
     // }
   ])
 
