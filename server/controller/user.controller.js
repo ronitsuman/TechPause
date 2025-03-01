@@ -21,6 +21,10 @@ const signupController = async (req, res) => {
       if (existingUser) {
         return res.status(400).json({ success: false, message: "❌ Email already registered!" });
       }
+      const UserNumber = await User.findOne({phone})
+      if (UserNumber) {
+        return res.status(400).json({ success: false, message: " this number is already registerd change the number " });
+      }
   
       // **🔹 Step 4: Hashing password before saving in DB**
       const hashedPassword = await bcrypt.hash(password, 10);
@@ -54,7 +58,7 @@ const signupController = async (req, res) => {
       console.log("User Created:", signedUser, "User ID:", id, "Email Token:", savedMailToken);
   
       // **🔹 Step 8: Sending verification email**
-      const subject = "🔹 Verification Email from Our Service";
+      const subject = " Verification Email from TechPause ";
       
       try {
         sendEmail(email, subject,

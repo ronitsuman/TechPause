@@ -18,7 +18,7 @@ const userSchema = new mongoose.Schema(
         phone:{
             type:String,
             required:[true,"phone is required field "],
-            unique:true
+            
         },
         category:{
             type:String,

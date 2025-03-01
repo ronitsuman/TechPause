@@ -12,7 +12,7 @@ const SignUp = ( { onSignupSuccess }) => {
     category: "",
   });
 
-  const [errors, setErrors] = useState({});
+
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [showPopup,setShowPopup]=useState(false)
    // API request ke time button disable karne ke liye
@@ -25,61 +25,56 @@ const SignUp = ( { onSignupSuccess }) => {
 
   // Form Validation
   const validateForm = () => {
-   
-
     if (!formData.name.trim()) {
-      toast.warning("name is so small ")
+      toast.warning("⚠️ Name is required!");
       return false;
-      
     }
     if (!formData.category.trim()) {
-      toast.warning("Select any one category is Required");
+      toast.warning("⚠️ Please select a category!");
       return false;
     }
     if (!formData.email.trim()) {
-      toast.warning("Email is Required");
-      false ;
-      
+      toast.warning("⚠️ Email is required!");
+      return false;
     } else if (!emailRegex.test(formData.email)) {
-      toast.error("Email is not valid");
-      return false
+      toast.error("❌ Invalid email format!");
+      return false;
     }
     if (!formData.phone.trim()) {
-      toast.warning("Phone is required");
-      
+      toast.warning("⚠️ Phone number is required!");
+      return false;
     } else if (!phoneRegex.test(formData.phone)) {
-      toast.error("Phone number should be 10 digits long");
-      return false ;
+      toast.error("❌ Phone number must be 10 digits!");
+      return false;
     }
     if (!formData.password.trim()) {
-      toast.warning("Password is required");
-      false ;
+      toast.warning("⚠️ Password is required!");
+      return false;
     } else if (!passwordRegex.test(formData.password)) {
-      toast.error("Password must be at least 8 characters long, include 1 Uppercase, 1 number, and 1 special character");
-      return false 
+      toast.error(
+        "❌ Password must be at least 8 characters long, include 1 uppercase letter, 1 number, and 1 special character!"
+      );
+      return false;
     }
 
+    return true; // ✅ Form is valid
   };
+
 
   // API Call to Add User
   const handleAddSubmit = async () => {
-    if (!validateForm())  // Agar form valid nahi hai to API call na kare
+    if (!validateForm()) return; // **✅ Stop execution if form is invalid**
 
-    setIsSubmitting(true); // 🔹 Button disable karne ke liye
+    setIsSubmitting(true); // **🔹 Disable button during API request**
 
     try {
-      // API End pont Karo
-      const response = 
-      await axios.post(
-        "http://localhost:3000/api/signup",
-        formData
-      );
+      // **🔹 Send API request**
+      const response = await axios.post("http://localhost:3000/api/signup", formData);
 
-      toast.success(response.data.message)
-      setShowPopup(true)
+      toast.success("✅ " + response.data.message);
+      setShowPopup(true);
 
-
-      // ✅ Form Reset
+      // **🔹 Reset form after successful signup**
       setFormData({
         name: "",
         email: "",
@@ -88,14 +83,12 @@ const SignUp = ( { onSignupSuccess }) => {
         category: "",
       });
 
-    } 
-    catch (error) {
+    } catch (error) {
       if (error.response) {
-        // **🔹 Email Already Exists Error**
+        // **🔹 Handle specific error messages**
         if (error.response.status === 400 && error.response.data.message === "Email already exists!") {
           toast.error("❌ This email is already registered. Try logging in.");
         } else {
-          // ❌ Other Errors
           toast.error("❌ " + (error.response.data.message || "Something went wrong!"));
         }
       } else {
@@ -106,9 +99,7 @@ const SignUp = ( { onSignupSuccess }) => {
     }
   };
 
-  
-
-  // Handle Form Submission
+  // **🔹 Handle Form Submission**
   const handleSubmit = (e) => {
     e.preventDefault();
     handleAddSubmit();
@@ -121,7 +112,7 @@ const SignUp = ( { onSignupSuccess }) => {
       <form action="" className="flex flex-col gap-2" onSubmit={handleSubmit}>
         {/* Name */}
         <div className="md:flex md:flex-col gap-1 md:w-[307px] lg:w-[397px]">
-          {errors.name && <p className="text-red-500">{errors.name}</p>}
+         
           <label htmlFor="name">Your name</label>
           <input
             type="text"
@@ -137,7 +128,7 @@ const SignUp = ( { onSignupSuccess }) => {
         {/* Email */}
         <div className="md:flex md:flex-col gap-1 md:w-[307px] lg:w-[397px]">
           <label htmlFor="email">Email:</label>
-          {errors.email && <p className="text-red-500">{errors.email}</p>}
+         
           <input
             type="email"
             name="email"
@@ -154,7 +145,7 @@ const SignUp = ( { onSignupSuccess }) => {
         {/* Phone */}
         <div className="md:flex md:flex-col gap-1 md:w-[307px] lg:w-[397px]">
           <label htmlFor="phone">Phone:</label>
-          {errors.phone && <p className="text-red-500">{errors.phone}</p>}
+        
           <input
             type="tel"
             name="phone"
@@ -172,7 +163,7 @@ const SignUp = ( { onSignupSuccess }) => {
         {/* Category */}
         <div className="md:flex md:flex-col gap-1 md:w-[307px] lg:w-[397px]">
           <label htmlFor="Category">Category:</label>
-          {errors.category && <p className="text-red-500">{errors.category}</p>}
+          
           <select
             name="category"
             id="category"
@@ -216,7 +207,7 @@ const SignUp = ( { onSignupSuccess }) => {
         {/* Password */}
         <div className="md:flex md:flex-col gap-1 md:w-[307px] lg:w-[397px]">
           <label htmlFor="password">Password:</label>
-          {errors.password && <p className="text-red-500">{errors.password}</p>}
+         
           <input
             type="password"
             name="password"

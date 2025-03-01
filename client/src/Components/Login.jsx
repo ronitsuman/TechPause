@@ -1,4 +1,6 @@
 import { useState } from "react";
+import axios from "axios";
+import { toast } from "react-toastify";
 
 const Login = () => {
   // 🔹 Form Data State
@@ -7,49 +9,67 @@ const Login = () => {
     password: "",
   });
 
-  // 🔹 Error Messages State
-  const [errors, setErrors] = useState({});
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   // 🔹 Regex Patterns
   const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
   const passwordRegex = /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{6,}$/;
 
-  // ✅ **Validation Function**
+  // ✅ **Validation Function (Now Only Uses Toast)**
   const validateForm = () => {
-    let newErrors = {};
+    if (!formData.email.trim()) {
+      toast.warning("⚠️ Email is required!");
+      return false;
+    } else if (!emailRegex.test(formData.email)) {
+      toast.error("❌ Invalid email format!");
+      return false;
+    }
 
-    if (!emailRegex.test(formData.email)) newErrors.email = "Invalid email format!";
-    if (!passwordRegex.test(formData.password)) newErrors.password = "Min 6 chars, 1 letter, 1 number & 1 special char!";
+    if (!formData.password.trim()) {
+      toast.warning("⚠️ Password is required!");
+      return false;
+    } else if (!passwordRegex.test(formData.password)) {
+      toast.error("❌ Password must be at least 6 characters long, include 1 letter, 1 number & 1 special character!");
+      return false;
+    }
 
-    setErrors(newErrors);
-    return Object.keys(newErrors).length === 0;
+    return true; // ✅ Form is valid
   };
 
   // ✅ **Handle Form Submission**
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    if (validateForm()) {
-      console.log("✅ Login Successful:", formData);
+    if (!validateForm()) {
+      toast.warning("⚠️ Please correct the errors and try again.");
+      return;
+    }
 
-      // 🔹 **Future API Integration**
-      /*
-      try {
-        const response = await fetch("https://your-api-endpoint.com/login", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(formData),
-        });
-        const data = await response.json();
-        console.log("Response from API:", data);
-      } catch (error) {
-        console.error("Error while logging in:", error);
+    setIsSubmitting(true); // ✅ Disable button while submitting
+
+    try {
+      // ✅ **Send API request to correct login route**
+      const response = await axios.post("http://localhost:3000/api/login", formData);
+
+      // ✅ **Success Response Handling**
+      toast.success("✅ Login Successful!");
+      console.log("Response from API:", response.data);
+
+      // ✅ **Reset Form after successful login**
+      setFormData({ email: "", password: "" });
+
+    } catch (error) {
+      // ❌ **Handle API Errors**
+      let errorMessage = "Something went wrong!";
+      if (error.response) {
+        errorMessage = error.response.data.message || errorMessage;
       }
-      */
-    } else {
-      console.log("❌ Validation Errors:", errors);
+      toast.error("❌ " + errorMessage);
+    } finally {
+      setIsSubmitting(false);
     }
   };
+
 
   return (
     <div className="p-4 w-[370px] md:h-[550px] md:w-[397px] md:gap-2 md:p-6 md:item-center md:justify-center md:flex md:flex-col text-black">
@@ -69,7 +89,7 @@ const Login = () => {
             value={formData.email}
             onChange={(e) => setFormData({ ...formData, email: e.target.value })}
           />
-          <p className="text-red-500">{errors.email}</p>
+         
         </div>
 
         {/* 🔹 Password Input */}
@@ -84,7 +104,7 @@ const Login = () => {
             value={formData.password}
             onChange={(e) => setFormData({ ...formData, password: e.target.value })}
           />
-          <p className="text-red-500">{errors.password}</p>
+          
         </div>
 
         {/* 🔹 Remember Me & Forgot Password */}
