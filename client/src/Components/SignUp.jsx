@@ -26,33 +26,33 @@ const SignUp = ( { onSignupSuccess }) => {
   // Form Validation
   const validateForm = () => {
     if (!formData.name.trim()) {
-      toast.warning("⚠️ Name is required!");
+      toast.warning(" Name is required!");
       return false;
     }
     if (!formData.category.trim()) {
-      toast.warning("⚠️ Please select a category!");
+      toast.warning(" Please select a category!");
       return false;
     }
     if (!formData.email.trim()) {
-      toast.warning("⚠️ Email is required!");
+      toast.warning(" Email is required!");
       return false;
     } else if (!emailRegex.test(formData.email)) {
-      toast.error("❌ Invalid email format!");
+      toast.error(" Invalid email format!");
       return false;
     }
     if (!formData.phone.trim()) {
-      toast.warning("⚠️ Phone number is required!");
+      toast.warning(" Phone number is required!");
       return false;
     } else if (!phoneRegex.test(formData.phone)) {
-      toast.error("❌ Phone number must be 10 digits!");
+      toast.error(" Phone number must be 10 digits!");
       return false;
     }
     if (!formData.password.trim()) {
-      toast.warning("⚠️ Password is required!");
+      toast.warning(" Password is required!");
       return false;
     } else if (!passwordRegex.test(formData.password)) {
       toast.error(
-        "❌ Password must be at least 8 characters long, include 1 uppercase letter, 1 number, and 1 special character!"
+        "Password must be at least 8 characters long, include 1 uppercase letter, 1 number, and 1 special character!"
       );
       return false;
     }
@@ -87,12 +87,12 @@ const SignUp = ( { onSignupSuccess }) => {
       if (error.response) {
         // **🔹 Handle specific error messages**
         if (error.response.status === 400 && error.response.data.message === "Email already exists!") {
-          toast.error("❌ This email is already registered. Try logging in.");
+          toast.error(" This email is already registered. Try logging in.");
         } else {
-          toast.error("❌ " + (error.response.data.message || "Something went wrong!"));
+          toast.error(error.response.data.message);
         }
       } else {
-        toast.error("❌ Server error. Try again later.");
+        toast.error(" Server error. Try again later.");
       }
     } finally {
       setIsSubmitting(false);
