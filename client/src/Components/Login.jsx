@@ -118,29 +118,13 @@ const Login = () => {
           </div>
         </div>
 
-        <button type="submit" className="bg-blue-500  w-[280px] sm:w-[397px] text-white rounded-2xl p-2">Sign In</button>
+        <button type="submit"  className={`bg-blue-500 w-[280px] sm:w-[397px] text-white rounded-2xl p-2 ${
+    isSubmitting ? "opacity-50 cursor-not-allowed" : ""
+  }`}
+  disabled={isSubmitting} > {isSubmitting ? "Processing..." : "Sign In"}</button>
 
         {/* 🔹 OR Section */}
-        <div className="invisible md:visible w-[397px] mt-[-30px]">
-          <div className="flex items-center w-full max-w-xl my-4">
-            <div className="flex-grow border-t border-gray-400"></div>
-            <span className="mx-2 text-gray-500 font-semibold">OR</span>
-            <div className="flex-grow border-t border-gray-400"></div>
-          </div>
-
-          {/* 🔹 Social Login Buttons */}
-          <div className="flex item-center gap-4 justify-center mt-[-16px]">
-            <button className="border w-[116px] bg-white flex item-center justify-center border-gray-300 p-2 rounded-lg shadow-sm">
-              <img src="google.png" className="w-6 h-6" alt="Google"/>
-            </button>
-            <button className="border w-[116px] bg-white flex item-center justify-center border-gray-300 p-2 rounded-lg shadow-sm">
-              <img src="https://upload.wikimedia.org/wikipedia/commons/0/05/Facebook_Logo_%282019%29.png" className="w-6 h-6" alt="Facebook"/>
-            </button>
-            <button className="border w-[116px] bg-white flex item-center justify-center border-gray-300 p-2 rounded-lg shadow-sm">
-              <img src="https://upload.wikimedia.org/wikipedia/commons/f/fa/Apple_logo_black.svg" className="w-6 h-6" alt="Apple"/>
-            </button>
-          </div>
-        </div>
+       
       </form>
     </div>
   );
