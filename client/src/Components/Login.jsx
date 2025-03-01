@@ -94,7 +94,7 @@ const Login = () => {
             <label htmlFor="remember">Remember me</label>
           </div>
           <div>
-            <a className="text-blue-600" href="#">Forgot Password?</a>
+            <a className="text-blue-600" href="/forgetPassword">Forgot Password?</a>
           </div>
         </div>
 

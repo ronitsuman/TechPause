@@ -5,91 +5,78 @@ import {confirmationEmailTemplate} from "../htmltemplate/html.mail.js";
 import crypto from "crypto";
 
 ////////////////////// sign up  ------------------------------------------------------------------------- 
-const signupController = async(req,res)=>{
-   try {
-    // step 1 : geting name,email,password,category ,phone from body
-    const {name ,email,password , category,phone,isVerified}=req.body;
-   
-    // step 2: checking all fields are fileld or not if any one of field is not wrote user get reponse 
-
-    if(!name|| !email || !password || !category || !phone){
-        return res.status(400).json({message:"All fields are required"});
-    }
-   
-    //step 3 checking user already exist or not if exist then return response
-
-    const existingUser = await User.findOne({email});
-
-    if(existingUser){
-        return res.status(400).json({message:"email already exists"})
-    }
-
-    // step 4 hasshing password before saving in db (because we never store the password plain in db there 
-    //  is risk of getting hacked so we store password in hashed form)
-
-    const hashedPassword = await bcrypt.hash(password,10)
-
-    // step 5 : creating email token for verification crypto is package for creating random token
-    // and randomBytes is method for creating random bytes and toString is method for converting bytes to string
-   // 12 is length of token in bytes=define length of token and to string is for converting bytes to string 
-   //and hex is for converting bytes to hexa decimal
-    const emailToken = crypto.randomBytes(12).toString("hex");
-
-    // step6 saving user in db
-
-    const user = new User({
-        name,  
+const signupController = async (req, res) => {
+    try {
+      // **🔹 Step 1: Getting name, email, password, category, phone from request body**
+      const { name, email, password, category, phone, isVerified } = req.body;
+  
+      // **🔹 Step 2: Checking if all required fields are provided**
+      if (!name || !email || !password || !category || !phone) {
+        return res.status(400).json({ success: false, message: "❌ All fields are required!" });
+      }
+  
+      // **🔹 Step 3: Check if the user already exists**
+      const existingUser = await User.findOne({ email });
+  
+      if (existingUser) {
+        return res.status(400).json({ success: false, message: "❌ Email already registered!" });
+      }
+  
+      // **🔹 Step 4: Hashing password before saving in DB**
+      const hashedPassword = await bcrypt.hash(password, 10);
+  
+      // **🔹 Step 5: Creating email verification token**
+      const emailToken = crypto.randomBytes(12).toString("hex");
+  
+      // **🔹 Step 6: Saving user in the database**
+      const user = new User({
+        name,
         email,
-        password:hashedPassword,
+        password: hashedPassword,
         category,
         phone,
-        isVerified,
+        isVerified: false, // By default user is not verified
         emailToken,
-    });
-
-    // await always use in db function here we are saving in db so we use await 
-
-    await user.save();
-
-    // step 7 sending email for verification
-    //
-
-    //     geting created user id
-
-    // getting creating user id and email token for verification
-
-    const signedUser = await User.findOne({email});
-
-    // getting user id and we are converting object id to string because we are getting object id
-    //
-
-    const id = signedUser._id.toString();
-
-    // getting email token for verification
-
-    const savedMailToken = signedUser.emailToken;
-
-    //  cehcking user and the token we are getting
-
-    console.log("user",signedUser ,"userDetail" ,id, savedMailToken);
-
-    // sending email for verification
-    // we use nodemailer for sending email
-    const Subject = "verification email from "
-    sendEmail(email,Subject,
-        confirmationEmailTemplate.replace("{name}",name ).replace
-        ("{link}",`http://localhost:3000/api/verify-email/${id}/${savedMailToken}`) );
-    
-    res.status(200).json({message:"user created successfully",success:true,}
+      });
+  
+      await user.save();
+  
+      // **🔹 Step 7: Fetch the newly created user for verification**
+      const signedUser = await User.findOne({ email });
+  
+      if (!signedUser) {
+        return res.status(500).json({ success: false, message: "❌ Error fetching user data. Please try again!" });
+      }
+  
+      const id = signedUser._id.toString();
+      const savedMailToken = signedUser.emailToken;
+  
+      console.log("User Created:", signedUser, "User ID:", id, "Email Token:", savedMailToken);
+  
+      // **🔹 Step 8: Sending verification email**
+      const subject = "🔹 Verification Email from Our Service";
+      
+      try {
+        sendEmail(email, subject,
+          confirmationEmailTemplate.replace("{name}", name)
+            .replace("{link}", `http://localhost:3000/api/verify-email/${id}/${savedMailToken}`)
         );
-    
-   } catch (error) {
-    console.error("Signup Error:", error);
-    res.status(500).json({ message: "Internal Server Error" });
-    
-   }
-
-}
+      } catch (emailError) {
+        console.error("Email Sending Error:", emailError);
+        return res.status(500).json({ success: false, message: "❌ Error sending verification email. Try again later!" });
+      }
+  
+      // **🔹 Success Response**
+      res.status(200).json({
+        success: true,
+        message: "✅ User created successfully! Please check your email for verification.",
+      });
+  
+    } catch (error) {
+      console.error("Signup Error:", error);
+      res.status(500).json({ success: false, message: "❌ Internal Server Error! Please try again later." });
+    }
+  };
 /////////////////////////verify email///////////////////////
 
 const verifyEmailController = async(req,res)=>{
@@ -160,6 +147,7 @@ const loginController = async (req, res) => {
         return res.status(500).json({ message: "Internal Server Error" });
     }
 };
+
 
 
     

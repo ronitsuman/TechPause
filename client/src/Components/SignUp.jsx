@@ -1,5 +1,6 @@
 import { useState } from "react";
 import axios from "axios"; // Axios import
+import { toast } from "react-toastify";
 
 const SignUp = ( { onSignupSuccess }) => {
   const [showCatInstr, setShowCatInstr] = useState(false);
@@ -24,38 +25,45 @@ const SignUp = ( { onSignupSuccess }) => {
 
   // Form Validation
   const validateForm = () => {
-    let newErrors = {};
+   
 
     if (!formData.name.trim()) {
-      newErrors.name = "Name is Required";
+      toast.warning("name is so small ")
+      return false;
+      
     }
     if (!formData.category.trim()) {
-      newErrors.category = "Select any one category is Required";
+      toast.warning("Select any one category is Required");
+      return false;
     }
     if (!formData.email.trim()) {
-      newErrors.email = "Email is Required";
+      toast.warning("Email is Required");
+      false ;
+      
     } else if (!emailRegex.test(formData.email)) {
-      newErrors.email = "Email is not valid";
+      toast.error("Email is not valid");
+      return false
     }
     if (!formData.phone.trim()) {
-      newErrors.phone = "Phone is required";
+      toast.warning("Phone is required");
+      
     } else if (!phoneRegex.test(formData.phone)) {
-      newErrors.phone = "Phone number should be 10 digits long";
+      toast.error("Phone number should be 10 digits long");
+      return false ;
     }
     if (!formData.password.trim()) {
-      newErrors.password = "Password is required";
+      toast.warning("Password is required");
+      false ;
     } else if (!passwordRegex.test(formData.password)) {
-      newErrors.password =
-        "Password must be at least 8 characters long, include 1 Uppercase, 1 number, and 1 special character";
+      toast.error("Password must be at least 8 characters long, include 1 Uppercase, 1 number, and 1 special character");
+      return false 
     }
 
-    setErrors(newErrors);
-    return Object.keys(newErrors).length === 0;
   };
 
   // API Call to Add User
   const handleAddSubmit = async () => {
-    if (!validateForm()) return; // Agar form valid nahi hai to API call na kare
+    if (!validateForm())  // Agar form valid nahi hai to API call na kare
 
     setIsSubmitting(true); // 🔹 Button disable karne ke liye
 
@@ -67,8 +75,7 @@ const SignUp = ( { onSignupSuccess }) => {
         formData
       );
 
-      
-      console.log("Server Response:", response.data);
+      toast.success(response.data.message)
       setShowPopup(true)
 
 
@@ -80,11 +87,22 @@ const SignUp = ( { onSignupSuccess }) => {
         phone: "",
         category: "",
       });
-    } catch (error) {
-      console.error("Error adding user:", error);
-      alert("Something went wrong. Please try again.");
+
+    } 
+    catch (error) {
+      if (error.response) {
+        // **🔹 Email Already Exists Error**
+        if (error.response.status === 400 && error.response.data.message === "Email already exists!") {
+          toast.error("❌ This email is already registered. Try logging in.");
+        } else {
+          // ❌ Other Errors
+          toast.error("❌ " + (error.response.data.message || "Something went wrong!"));
+        }
+      } else {
+        toast.error("❌ Server error. Try again later.");
+      }
     } finally {
-      setIsSubmitting(false); //  Button wapas enable karne ke liye
+      setIsSubmitting(false);
     }
   };
 
