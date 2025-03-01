@@ -29,6 +29,10 @@ const userSchema = new mongoose.Schema(
         emailToken:{type:String,
             default:null
         },
+        otp:{
+            type:String,
+            default:null
+        }
     },
     {timestamps:true});
 

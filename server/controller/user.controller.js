@@ -1,14 +1,15 @@
 import bcrypt from "bcrypt"
 import {User} from "../models/user.model.js";
 import {sendEmail} from "../services/nodemailer.js";
-import {confirmationEmailTemplate} from "../htmltemplate/html.mail.js";
+import {confirmationEmailTemplate, otpEmail} from "../htmltemplate/html.mail.js";
 import crypto from "crypto";
+import {generateOTP} from "../services/generateOtp.js";
 
 ////////////////////// sign up  ------------------------------------------------------------------------- 
 const signupController = async (req, res) => {
     try {
       // **🔹 Step 1: Getting name, email, password, category, phone from request body**
-      const { name, email, password, category, phone, isVerified } = req.body;
+      const { name, email, password, category, phone, isVerified ,otp } = req.body;
   
       // **🔹 Step 2: Checking if all required fields are provided**
       if (!name || !email || !password || !category || !phone) {
@@ -41,6 +42,7 @@ const signupController = async (req, res) => {
         phone,
         isVerified: false, // By default user is not verified
         emailToken,
+        otp,
       });
   
       await user.save();
@@ -152,7 +154,123 @@ const loginController = async (req, res) => {
     }
 };
 
+// check email is exist or not if exist then the next process otp generate 
+
+
+const emailChecker = async (req, res) => {
+  try {
+    const { email } = req.body;
+
+    // Check if email exists in DB
+    const user = await User.findOne({ email }); // ✅ Correct model usage
+
+    if (!user) {
+      return res
+        .status(400)
+        .json({ exist: false, success: false, message: "Email does not exist" });
+    }
+
+    // OTP Generate
+    const otp = generateOTP();
+
+    // OTP DB me store karna
+    user.otp = otp;
+    await user.save();
+
+    // Send verification email
+    const subject = "Email from TechPause for Password Change";
+
+    try {
+      sendEmail(
+        email,
+        subject,
+        otpEmail.replace("{name}", user.name).replace("{sendotp}", otp)
+      );
+    } catch (emailError) {
+      console.error("Email Sending Error:", emailError);
+      return res
+        .status(500)
+        .json({
+          success: false,
+          message: "Error sending password change email. Try again later!",
+        });
+    }
+
+    // **Success Response**
+    res.status(200).json({ success: true, message: "Check your email for OTP" });
+
+  } catch (error) {
+    console.error("Error:", error);
+    res.status(500).json({ success: false, message: "Internal Server Error" });
+  }
+};
+
+// verify otp 
+const verifyOTP = async (req, res) => {
+    try {
+      const { email, otp } = req.body;
+  
+      if (!email || !otp) {
+        return res.status(400).json({ message: "Email and OTP are required" });
+      }
+  
+      // Find user in DB
+      const user = await User.findOne({ email });
+  
+      if (!user) {
+        return res.status(400).json({ message: "User not found" });
+      }
+  
+      // OTP Check
+      if (!user.otp || user.otp !== otp) {
+        return res.status(400).json({ message: "Invalid OTP" });
+      }
+  
+      // ✅ OTP Verified Successfully
+      res.json({ success: true, message: "OTP verified successfully! You can reset your password now." });
+  
+    } catch (error) {
+      console.error("Error:", error);
+      res.status(500).json({ success: false, message: "Internal Server Error" });
+    }
+  };
+  
+// password change
+const resetPassword = async (req, res) => {
+    try {
+      const { email, newPassword } = req.body;
+  
+      if (!email || !newPassword) {
+        return res.status(400).json({ message: "Email and new password are required" });
+      }
+  
+      // Find user
+      const user = await User.findOne({ email });
+  
+      if (!user) {
+        return res.status(400).json({ message: "User not found" });
+      }
+  
+      // Hash the new password before saving
+      const salt = await bcrypt.genSalt(10);
+      const hashedPassword = await bcrypt.hash(newPassword, salt);
+  
+      // Update password in DB
+      user.password = hashedPassword;
+      user.otp = null; // Remove OTP after password reset
+      user.otpExpiresAt = null;
+      await user.save();
+  
+      res.json({ success: true, message: "Password changed successfully!" });
+  
+    } catch (error) {
+      console.error("Error:", error);
+      res.status(500).json({ success: false, message: "Internal Server Error" });
+    }
+  };
+
+
 
 
     
-export { signupController , verifyEmailController,loginController};
+export { signupController , verifyEmailController,loginController, emailChecker,verifyOTP,resetPassword };

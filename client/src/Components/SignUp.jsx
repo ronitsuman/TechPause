@@ -151,7 +151,7 @@ const SignUp = ( { onSignupSuccess }) => {
             name="phone"
             id="phone"
             maxLength="10"
-            className="placeholder:p-6 bg-white"
+            className="placeholder:p-6 bg-white"  
             placeholder="Phone No."
             value={formData.phone}
             onChange={(e) =>
