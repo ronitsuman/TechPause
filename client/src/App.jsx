@@ -19,7 +19,7 @@ const App = () => {
 
     },
     {
-      path:"/forgetPassword",
+      path:"/forgetPassword/*",
       element:<><ForgetPassword/> </>
     }
   ])

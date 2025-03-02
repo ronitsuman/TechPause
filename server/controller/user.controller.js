@@ -208,14 +208,12 @@ const emailChecker = async (req, res) => {
 // verify otp 
 const verifyOTP = async (req, res) => {
     try {
-      const { email, otp } = req.body;
+      const {  otp } = req.body;
   
-      if (!email || !otp) {
-        return res.status(400).json({ message: "Email and OTP are required" });
-      }
+      
   
       // Find user in DB
-      const user = await User.findOne({ email });
+      const user = await User.findOne({ otp });
   
       if (!user) {
         return res.status(400).json({ message: "User not found" });
@@ -237,37 +235,37 @@ const verifyOTP = async (req, res) => {
   
 // password change
 const resetPassword = async (req, res) => {
-    try {
-      const { email, newPassword } = req.body;
-  
-      if (!email || !newPassword) {
-        return res.status(400).json({ message: "Email and new password are required" });
-      }
-  
-      // Find user
-      const user = await User.findOne({ email });
-  
-      if (!user) {
-        return res.status(400).json({ message: "User not found" });
-      }
-  
-      // Hash the new password before saving
-      const salt = await bcrypt.genSalt(10);
-      const hashedPassword = await bcrypt.hash(newPassword, salt);
-  
-      // Update password in DB
-      user.password = hashedPassword;
-      user.otp = null; // Remove OTP after password reset
-      user.otpExpiresAt = null;
-      await user.save();
-  
-      res.json({ success: true, message: "Password changed successfully!" });
-  
-    } catch (error) {
-      console.error("Error:", error);
-      res.status(500).json({ success: false, message: "Internal Server Error" });
+  try {
+    const { email, newPassword } = req.body;  // ✅ Correct variable destructuring
+
+    if (!email || !newPassword) {
+      return res.status(400).json({ message: "Email and new password are required" });
     }
-  };
+
+    // ✅ Find user
+    const user = await User.findOne({ email });
+
+    if (!user) {
+      return res.status(400).json({ message: "User not found" });
+    }
+
+    // ✅ Correct Hashing (Use newPassword instead of password)
+    const hashedPassword = await bcrypt.hash(newPassword, 10);
+    
+    // ✅ Update password in DB
+    user.password = hashedPassword;
+    user.otp = null; // Remove OTP after password reset
+    
+    await user.save();
+
+    res.json({ success: true, message: "Password changed successfully!" });
+
+  } catch (error) {
+    console.error("Error:", error);
+    res.status(500).json({ success: false, message: "Internal Server Error" });
+  }
+};
+
 
 
 

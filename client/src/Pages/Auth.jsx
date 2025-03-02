@@ -9,9 +9,10 @@ const Auth = () => {
   const isLoginParam = searchParams.get("type") === "login";
   const [isLogin, setIsLogin] = useState(isLoginParam);
 
+  // ✅ Ensure state updates when query param changes
   useEffect(() => {
     setIsLogin(isLoginParam);
-  }, [isLoginParam]);
+  }, [searchParams]); // 🔹 `searchParams` add kiya, taaki query change hote hi state update ho
 
   const handleSignupSuccess = () => {
     setIsLogin(true);

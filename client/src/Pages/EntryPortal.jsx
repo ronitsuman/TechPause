@@ -9,8 +9,8 @@ const EntryPortal = () => {
    <nav className="flex justify-between items-center p-5 border fixed w-full  bg-white/60 backdrop-blur shadow-md z-10 " >    
     <h1 className="text-3xl font-bold bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500 text-transparent bg-clip-text">TechPause</h1>
     <ul className="flex gap-5">
-        <li><button className="p-4 rounded-2xl bg-white text-black hover:bg-gray-200" onClick={() => navigate('/auth')}>Login</button></li>
-        <li><button className="border p-4 rounded-2xl bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500 text-transparent bg-clip-border text-white hover:opacity-80" onClick={() => navigate('/auth')}>Sign In</button></li>
+        <li><button className="p-4 rounded-2xl bg-white text-black hover:bg-gray-200" onClick={() => navigate('/auth?type=login')}>Login</button></li>
+        <li><button className="border p-4 rounded-2xl bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500  bg-clip-border text-white hover:opacity-80" onClick={() => navigate('/auth')}>Sign In</button></li>
     </ul>
    </nav>
    {/* main content */}
@@ -19,8 +19,8 @@ const EntryPortal = () => {
     <h1 className="text-4xl font-bold text-center  bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500 text-transparent bg-clip-text  ">Share Your Ideas with the World </h1>
     <p className="text-xl tracking-wide text-center  ">Join the community of writers and readers, Create, Share and discover amazing content.</p>
     <div className="flex gap-4 mt-5">
-        <button className="border p-4 rounded-2xl bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500 text-transparent bg-clip-border text-white hover:opacity-80" onClick={() => navigate('/auth')}>Get Started</button>
-        <button className="p-2 rounded-xl text-black bg-white hover:bg-gray-200" onClick={() => navigate('/auth')}>Login</button>
+        <button className="border p-4 rounded-2xl bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500 bg-clip-border text-white hover:opacity-80" onClick={() => navigate('/auth')}>Get Started</button>
+        <button className="p-2 rounded-xl text-black bg-white hover:bg-gray-200" onClick={() => navigate('/auth?type=login')}>Login</button>
     </div>
    </section>
    {/* posts */}
