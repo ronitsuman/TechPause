@@ -8,15 +8,15 @@ import {generateOTP} from "../services/generateOtp.js";
 ////////////////////// sign up  ------------------------------------------------------------------------- 
 const signupController = async (req, res) => {
     try {
-      // **🔹 Step 1: Getting name, email, password, category, phone from request body**
+      // ** Step 1: Getting name, email, password, category, phone from request body**
       const { name, email, password, category, phone, isVerified ,otp } = req.body;
   
-      // **🔹 Step 2: Checking if all required fields are provided**
+      // ** Step 2: Checking if all required fields are provided**
       if (!name || !email || !password || !category || !phone) {
         return res.status(400).json({ success: false, message: "❌ All fields are required!" });
       }
   
-      // **🔹 Step 3: Check if the user already exists**
+      // ** Step 3: Check if the user already exists**
       const existingUser = await User.findOne({ email });
   
       if (existingUser) {
@@ -27,13 +27,13 @@ const signupController = async (req, res) => {
         return res.status(400).json({ success: false, message: " this number is already registerd change the number " });
       }
   
-      // **🔹 Step 4: Hashing password before saving in DB**
+      // **   Step 4: Hashing password before saving in DB**
       const hashedPassword = await bcrypt.hash(password, 10);
   
-      // **🔹 Step 5: Creating email verification token**
+      // ** Step 5: Creating email verification token**
       const emailToken = crypto.randomBytes(12).toString("hex");
   
-      // **🔹 Step 6: Saving user in the database**
+      // ** Step 6: Saving user in the database**
       const user = new User({
         name,
         email,
@@ -47,7 +47,7 @@ const signupController = async (req, res) => {
   
       await user.save();
   
-      // **🔹 Step 7: Fetch the newly created user for verification**
+      // ** Step 7: Fetch the newly created user for verification**
       const signedUser = await User.findOne({ email });
   
       if (!signedUser) {
@@ -59,7 +59,7 @@ const signupController = async (req, res) => {
   
       console.log("User Created:", signedUser, "User ID:", id, "Email Token:", savedMailToken);
   
-      // **🔹 Step 8: Sending verification email**
+      // ** Step 8: Sending verification email**
       const subject = " Verification Email from TechPause ";
       
       try {
@@ -72,7 +72,7 @@ const signupController = async (req, res) => {
         return res.status(500).json({ success: false, message: "❌ Error sending verification email. Try again later!" });
       }
   
-      // **🔹 Success Response**
+      // ** Success Response**
       res.status(200).json({
         success: true,
         message: "✅ User created successfully! Please check your email for verification.",
@@ -133,14 +133,14 @@ const loginController = async (req, res) => {
         const user = await User.findOne({ email });
 
         if (!user) {
-            return res.status(401).json({ message: "Invalid email" }); // Changed condition
+            return res.status(401).json({success:false, message: "Invalid email" }); // Changed condition
         }
 
         // Step 4: Compare the provided password with stored password in the database
         const result = await bcrypt.compare(password, user.password);
 
         if (!result) {
-            return res.status(400).json({ message: "Incorrect password" });
+            return res.status(400).json({ success:false, message: "Incorrect password" });
         }
 
         // Step 5: Sending success response 
@@ -162,12 +162,12 @@ const emailChecker = async (req, res) => {
     const { email } = req.body;
 
     // Check if email exists in DB
-    const user = await User.findOne({ email }); // ✅ Correct model usage
+    const user = await User.findOne({ email }); 
 
     if (!user) {
       return res
         .status(400)
-        .json({ exist: false, success: false, message: "Email does not exist" });
+        .json({  success: false, message: "Email does not exist" });
     }
 
     // OTP Generate
@@ -184,7 +184,7 @@ const emailChecker = async (req, res) => {
       sendEmail(
         email,
         subject,
-        otpEmail.replace("{name}", user.name).replace("{sendotp}", otp)
+        otpEmail.replace("{name}", user.name).replace("{otp}", otp)
       );
     } catch (emailError) {
       console.error("Email Sending Error:", emailError);
@@ -196,7 +196,7 @@ const emailChecker = async (req, res) => {
         });
     }
 
-    // **Success Response**
+    
     res.status(200).json({ success: true, message: "Check your email for OTP" });
 
   } catch (error) {
@@ -220,11 +220,11 @@ const verifyOTP = async (req, res) => {
       }
   
       // OTP Check
-      if (!user.otp || user.otp !== otp) {
+      if ( user.otp !== otp) {
         return res.status(400).json({ message: "Invalid OTP" });
       }
   
-      // ✅ OTP Verified Successfully
+      //  OTP Verified Successfully
       res.json({ success: true, message: "OTP verified successfully! You can reset your password now." });
   
     } catch (error) {
@@ -236,23 +236,23 @@ const verifyOTP = async (req, res) => {
 // password change
 const resetPassword = async (req, res) => {
   try {
-    const { email, newPassword } = req.body;  // ✅ Correct variable destructuring
+    const { email, newPassword } = req.body;  
 
     if (!email || !newPassword) {
       return res.status(400).json({ message: "Email and new password are required" });
     }
 
-    // ✅ Find user
+    //  Find user
     const user = await User.findOne({ email });
 
     if (!user) {
       return res.status(400).json({ message: "User not found" });
     }
 
-    // ✅ Correct Hashing (Use newPassword instead of password)
+    //   Hashing ( newPassword )
     const hashedPassword = await bcrypt.hash(newPassword, 10);
     
-    // ✅ Update password in DB
+    //  Update password in DB
     user.password = hashedPassword;
     user.otp = null; // Remove OTP after password reset
     
