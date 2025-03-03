@@ -133,7 +133,7 @@ const loginController = async (req, res) => {
         const user = await User.findOne({ email });
 
         if (!user) {
-            return res.status(401).json({success:false, message: "Invalid email" }); // Changed condition
+            return res.status(401).json({success:false, message: " Email not exist" }); // Changed condition
         }
 
         // Step 4: Compare the provided password with stored password in the database

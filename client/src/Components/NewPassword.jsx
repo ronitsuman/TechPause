@@ -37,8 +37,8 @@ const NewPassword = ({ setStep }) => {
   };
 
   return (
-    <div className="ml-64 p-4">
-      <h2 className="text-2xl font-bold">Set New Password</h2>
+    <div className="ml-6 mt-24 backdrop-blur-2xl bg-[#fcebf3] p-4 md:ml-20 md:rounded-2xl md:p-10 md:w-full md:bg-white lg:ml-44 lg:rounded-2xl lg:p-10 lg:w-auto lg:bg-white ">
+      <h2 className="text-2xl font-bold text-center  bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500 text-transparent bg-clip-text">Set New Password</h2>
       <form onSubmit={handleSubmit}>
         
         {/* ✅ Email Field (Backend Demand ke according) */}
@@ -48,7 +48,7 @@ const NewPassword = ({ setStep }) => {
           value={email}
           onChange={(e) => setEmail(e.target.value)}
           required
-          className="border p-2 mt-2 w-full"
+          className="border p-2 mt-12 w-full"
         />
 
         {/* ✅ New Password Field */}
@@ -58,7 +58,7 @@ const NewPassword = ({ setStep }) => {
           value={newPassword}
           onChange={(e) => setNewPassword(e.target.value)}
           required
-          className="border p-2 mt-2 w-full"
+          className="border p-2 mt-14 w-full"
         />
 
         {/* ✅ Confirm Password Field */}
@@ -68,7 +68,7 @@ const NewPassword = ({ setStep }) => {
           value={confirmPassword}
           onChange={(e) => setConfirmPassword(e.target.value)}
           required
-          className="border p-2 mt-2 w-full"
+          className="border p-2 mt-16 w-full"
         />
 
         {/* ✅ Submit Button */}
