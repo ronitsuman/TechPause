@@ -4,10 +4,12 @@ import { Route, Routes, useNavigate } from "react-router-dom";
 import VerifyEmail from "../Components/VerifyEmail";
 import EnterOTP from "../Components/EnterOTP";
 import NewPassword from "../Components/NewPassword";
+import { AuthProvider } from "../context/AuthContext";
 
 const ForgetPassword = () => {
   // ✅ State to track current step
   const [step, setStep] = useState(1);
+   //email state added here 
   const navigate = useNavigate();
 
   // ✅ Click handle function to navigate steps
@@ -26,11 +28,15 @@ const ForgetPassword = () => {
       <SideBAr step={step} handleStepClick={handleStepClick} />
       <div className="ml-[]">
         {/* ✅ Routing Define */}
+        <AuthProvider>   
         <Routes>
-          <Route path="/" element={<VerifyEmail setStep={setStep} />} />
-          <Route path="/enter-otp" element={<EnterOTP setStep={setStep} />} />
+          <Route path="/" element={<VerifyEmail setStep={setStep}  />} />
+          <Route path="/enter-otp" element={<EnterOTP setStep={setStep}  />} />
           <Route path="/new-password" element={<NewPassword setStep={setStep} />} />
         </Routes>
+        </AuthProvider>
+        
+
       </div>
     </div>
   );
