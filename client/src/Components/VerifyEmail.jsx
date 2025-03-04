@@ -2,9 +2,10 @@ import  { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { toast } from "react-toastify";
+import { useAuth } from "../context/AuthContext";
 
 const VerifyEmail = ({ setStep }) => {
-  const [email, setEmail] = useState("");  // ✅ User Email store karne ke liye state
+   const {email,setEmail}=useAuth()  // ✅ User Email store karne ke liye state
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
@@ -12,9 +13,10 @@ const VerifyEmail = ({ setStep }) => {
     e.preventDefault();
     setLoading(true);
     try {
-      await axios.post("http://localhost:3000/api/check-email-otp", { email });
+      await axios.post("http://localhost:3000/api/check-email-otp", { email});
 
       toast.success("OTP sent successfully!");
+    
       setStep(2);  // ✅ Step 2 Unlock
       navigate("/forgetPassword/enter-otp");  // ✅ OTP Page par le jao
     } catch (error) {
@@ -40,7 +42,7 @@ const VerifyEmail = ({ setStep }) => {
           className="border  p-4 rounded-2xl bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500 bg-clip-border text-white hover:opacity-80 mt-12"
           disabled={loading}
         >
-          {loading ? "Verifying..." : "Verify Email"}
+          {loading ? "Verifying..." : "Verify Email & Send OTP"}
         </button>
       </form>
     </div>

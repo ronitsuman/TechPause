@@ -208,12 +208,12 @@ const emailChecker = async (req, res) => {
 // verify otp 
 const verifyOTP = async (req, res) => {
     try {
-      const {  otp } = req.body;
+      const { email, otp } = req.body;
   
       
   
       // Find user in DB
-      const user = await User.findOne({ otp });
+      const user = await User.findOne({ email });
   
       if (!user) {
         return res.status(400).json({ message: "User not found" });

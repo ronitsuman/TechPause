@@ -1,6 +1,6 @@
 import { useState } from "react";
 import SideBAr from "../Components/SideBAr";
-import { Route, Routes, useNavigate } from "react-router-dom";
+import { Route, Routes, useNavigate } from "react-router-dom"; 
 import VerifyEmail from "../Components/VerifyEmail";
 import EnterOTP from "../Components/EnterOTP";
 import NewPassword from "../Components/NewPassword";

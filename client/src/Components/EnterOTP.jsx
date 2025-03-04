@@ -2,9 +2,11 @@ import  { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { toast } from "react-toastify";
+import { useAuth } from "../context/AuthContext";
 
 const EnterOTP = ({ setStep }) => {
   const [otp, setOtp] = useState("");
+  const{email}=useAuth()
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
@@ -12,7 +14,7 @@ const EnterOTP = ({ setStep }) => {
     e.preventDefault();
     setLoading(true);
     try {
-      await axios.post("http://localhost:3000/api/verify-OTP", { otp });
+      await axios.post("http://localhost:3000/api/verify-OTP", {email, otp });
 
       toast.success("OTP verified successfully!");
       setStep(3);  // ✅ Step 3 Unlock

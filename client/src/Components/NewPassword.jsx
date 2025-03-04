@@ -1,10 +1,11 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { toast } from "react-toastify";
+import { useAuth } from "../context/AuthContext";
 
-const NewPassword = ({ setStep }) => {
-  const [email, setEmail] = useState("");  
+const NewPassword = ({ setStep}) => {   //email sent as prop
+  const {email} =useAuth()
   const [newPassword, setNewPassword] = useState("");  
   const [confirmPassword, setConfirmPassword] = useState("");  // Confirm Password for validation
   const [loading, setLoading] = useState(false);
@@ -41,7 +42,7 @@ const NewPassword = ({ setStep }) => {
       <h2 className="text-2xl font-bold text-center  bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500 text-transparent bg-clip-text">Set New Password</h2>
       <form onSubmit={handleSubmit}>
         
-        {/* ✅ Email Field (Backend Demand ke according) */}
+        {/* ✅ Email Field (Backend Demand ke according)
         <input
           type="email"
           placeholder="Enter your email"
@@ -49,7 +50,7 @@ const NewPassword = ({ setStep }) => {
           onChange={(e) => setEmail(e.target.value)}
           required
           className="border p-2 mt-12 w-full"
-        />
+        /> */}
 
         {/* ✅ New Password Field */}
         <input
@@ -58,7 +59,7 @@ const NewPassword = ({ setStep }) => {
           value={newPassword}
           onChange={(e) => setNewPassword(e.target.value)}
           required
-          className="border p-2 mt-14 w-full"
+          className="border p-2 mt-12 w-full"
         />
 
         {/* ✅ Confirm Password Field */}
@@ -68,7 +69,7 @@ const NewPassword = ({ setStep }) => {
           value={confirmPassword}
           onChange={(e) => setConfirmPassword(e.target.value)}
           required
-          className="border p-2 mt-16 w-full"
+          className="border p-2 mt-14 w-full"
         />
 
         {/* ✅ Submit Button */}
