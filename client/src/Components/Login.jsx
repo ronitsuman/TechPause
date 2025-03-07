@@ -77,7 +77,7 @@ const Login = () => {
       <p>Pause screens, live fully with <strong>TechPause</strong></p>
       
       <form onSubmit={handleSubmit} className="flex flex-col gap-4">
-        {/* 🔹 Email Input */}
+        {/*  Email Input */}
         <div className="md:flex md:flex-col gap-2 md:w-[397px] h-[76px]">
           <label htmlFor="email">Email</label>
           <input
@@ -92,7 +92,7 @@ const Login = () => {
          
         </div>
 
-        {/* 🔹 Password Input */}
+        {/*  Password Input */}
         <div className="md:flex md:flex-col gap-2 md:w-[397px] h-[76px]">
           <label htmlFor="password">Password</label>
           <input
@@ -107,7 +107,7 @@ const Login = () => {
           
         </div>
 
-        {/* 🔹 Remember Me & Forgot Password */}
+        {/*  Remember Me & Forgot Password */}
         <div className="flex-row sm:flex justify-between w-[397px]">
           <div className="flex gap-1">
             <input type="checkbox" id="remember" name="remember" />
@@ -123,7 +123,7 @@ const Login = () => {
   }`}
   disabled={isSubmitting} > {isSubmitting ? "Processing..." : "Sign In"}</button>
 
-        {/* 🔹 OR Section */}
+       {/* or section lke sihnup from google  */}
        
       </form>
     </div>

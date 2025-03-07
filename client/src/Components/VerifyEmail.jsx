@@ -5,7 +5,7 @@ import { toast } from "react-toastify";
 import { useAuth } from "../context/AuthContext";
 
 const VerifyEmail = ({ setStep }) => {
-   const {email,setEmail}=useAuth()  // ✅ User Email store karne ke liye state
+   const {email,setEmail}=useAuth()  //  User Email store karne ke liye state
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
@@ -17,13 +17,13 @@ const VerifyEmail = ({ setStep }) => {
 
       toast.success("OTP sent successfully!");
     
-      setStep(2);  // ✅ Step 2 Unlock
-      navigate("/forgetPassword/enter-otp");  // ✅ OTP Page par le jao
+      setStep(2);  // Unlock
+      navigate("/forgetPassword/enter-otp");  // OTP Page par le jao
     } catch (error) {
       toast.error(error.response?.data?.message || "Something went wrong!");
     }
     setLoading(false);
-  };
+  }
 
   return (
     <div className="ml-6 mt-24 backdrop-blur-2xl bg-[#fcebf3] p-4 md:ml-20 md:rounded-2xl md:p-10 md:w-full md:bg-white lg:ml-44 lg:rounded-2xl lg:p-10 lg:w-full lg:bg-white  ">

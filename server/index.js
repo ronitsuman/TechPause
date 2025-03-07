@@ -30,5 +30,15 @@ app.use(cors());
 app.use(express.json());
 
 
-
+ 
 app.use("/api",Route)
+
+app.use((err,req,res,next)=>{
+   const {statusCode,message}=err;
+   if(statusCode || message ){
+    res.status(statusCode || 500).json({message});
+   }else{
+    res.status(500).json({message:"server error"})
+   }
+   console.log("status",statusCode,"error",message)
+})

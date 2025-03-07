@@ -1,9 +1,10 @@
 import express from "express";
 import {signupController,verifyEmailController,loginController , emailChecker,verifyOTP, resetPassword } from "../controller/user.controller.js";
+import asyncHandler from "../util/asyncHandler.js";
 
 export const Route = express.Router();
 
-Route.post("/signup", signupController);
+Route.post("/signup",asyncHandler(signupController) );
 
 Route.get("/verify-email/:id/:token", verifyEmailController);
 

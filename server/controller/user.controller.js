@@ -5,26 +5,28 @@ import {confirmationEmailTemplate, otpEmail} from "../htmltemplate/html.mail.js"
 import crypto from "crypto";
 import {generateOTP} from "../services/generateOtp.js";
 
+import customError from "../util/Error.js";
+
 ////////////////////// sign up  ------------------------------------------------------------------------- 
 const signupController = async (req, res) => {
-    try {
+  
       // ** Step 1: Getting name, email, password, category, phone from request body**
       const { name, email, password, category, phone, isVerified ,otp } = req.body;
   
       // ** Step 2: Checking if all required fields are provided**
       if (!name || !email || !password || !category || !phone) {
-        return res.status(400).json({ success: false, message: "❌ All fields are required!" });
+        throw new customError (400,"all fields are required ")
       }
   
       // ** Step 3: Check if the user already exists**
       const existingUser = await User.findOne({ email });
   
       if (existingUser) {
-        return res.status(400).json({ success: false, message: "❌ Email already registered!" });
+        throw new customError (400,"Email already in Use ")
       }
       const UserNumber = await User.findOne({phone})
       if (UserNumber) {
-        return res.status(400).json({ success: false, message: " this number is already registerd change the number " });
+        throw new customError (400,"Phone no already exist  ")
       }
   
       // **   Step 4: Hashing password before saving in DB**
@@ -77,16 +79,13 @@ const signupController = async (req, res) => {
         success: true,
         message: "✅ User created successfully! Please check your email for verification.",
       });
+}
   
-    } catch (error) {
-      console.error("Signup Error:", error);
-      res.status(500).json({ success: false, message: "❌ Internal Server Error! Please try again later." });
-    }
-  };
+  
 /////////////////////////verify email///////////////////////
 
 const verifyEmailController = async(req,res)=>{
-    try {
+   
 
         // geting id and token from params
         const {id,token} = req.params;
@@ -94,11 +93,11 @@ const verifyEmailController = async(req,res)=>{
         // checking user exist or not
         const user = await User.findById(id);
         if(!user){
-            return res.status(404).json({message:"User not found"});
+          throw new customError (400,"User not found ")
         }
         // checking user email token and token we are getting from params
         if(user.emailToken !== token){
-            return res.status(400).json({message:"Invalid Token"});
+          throw new customError (400,"Invalid token ")
         }
         // if user exist and token is valid then we are updating user email token to null and isVerified to true 
         user.emailToken = null;
@@ -110,37 +109,33 @@ const verifyEmailController = async(req,res)=>{
         res.redirect("http://localhost:5173/auth?type=login")
         console.log("user",user,"id verified",id,token);
         
-    }
-    catch (error) {
-        console.error("Email Verification Error:", error);
-        res.status(500).json({ message: "Internal Server Error" });
-        
-       }
-    }
+    };
+  
+
 // ///////////////////////////////////login////////
 
 const loginController = async (req, res) => {
-    try {
+ 
         // Step 1: Get email and password from request body
         const { email, password } = req.body;
 
         // Step 2: Check if email and password are provided
         if (!email || !password) {
-            return res.status(400).json({ message: "All fields are required" });
+          throw new customError (400,"all fields are required ")
         }
 
         // Step 3: Check if the user exists in the database
         const user = await User.findOne({ email });
 
         if (!user) {
-            return res.status(401).json({success:false, message: " Email not exist" }); // Changed condition
+          throw new customError (400,"Email not exist  ")
         }
 
         // Step 4: Compare the provided password with stored password in the database
         const result = await bcrypt.compare(password, user.password);
 
         if (!result) {
-            return res.status(400).json({ success:false, message: "Incorrect password" });
+          throw new customError (400,"Incoreect Password ")
         }
 
         // Step 5: Sending success response 
@@ -148,27 +143,20 @@ const loginController = async (req, res) => {
             message: "Login Successful",
         });
 
-    } catch (error) {
-        console.error("Login Error:", error);
-        return res.status(500).json({ message: "Internal Server Error" });
-    }
 };
 
 // check email is exist or not if exist then the next process otp generate 
 
 
 const emailChecker = async (req, res) => {
-  try {
+
     const { email } = req.body;
 
     // Check if email exists in DB
     const user = await User.findOne({ email }); 
 
     if (!user) {
-      return res
-        .status(400)
-        .json({  success: false, message: "Email does not exist" });
-    }
+      throw new customError (400,"Email won't exist ")}
 
     // OTP Generate
     const otp = generateOTP();
@@ -199,15 +187,12 @@ const emailChecker = async (req, res) => {
     
     res.status(200).json({ success: true, message: "Check your email for OTP" });
 
-  } catch (error) {
-    console.error("Error:", error);
-    res.status(500).json({ success: false, message: "Internal Server Error" });
-  }
+
 };
 
 // verify otp 
 const verifyOTP = async (req, res) => {
-    try {
+  
       const { email, otp } = req.body;
   
       
@@ -216,37 +201,35 @@ const verifyOTP = async (req, res) => {
       const user = await User.findOne({ email });
   
       if (!user) {
-        return res.status(400).json({ message: "User not found" });
+        throw new customError (400,"User not found ")
       }
   
       // OTP Check
       if ( user.otp !== otp) {
-        return res.status(400).json({ message: "Invalid OTP" });
+        throw new customError (400,"Invalid otp ")
       }
   
       //  OTP Verified Successfully
       res.json({ success: true, message: "OTP verified successfully! You can reset your password now." });
   
-    } catch (error) {
-      console.error("Error:", error);
-      res.status(500).json({ success: false, message: "Internal Server Error" });
-    }
+
   };
+
   
 // password change
 const resetPassword = async (req, res) => {
-  try {
+
     const { email, newPassword } = req.body;  
 
     if (!email || !newPassword) {
-      return res.status(400).json({ message: "Email and new password are required" });
+      throw new customError (400,"Password should be not empty ")
     }
 
     //  Find user
     const user = await User.findOne({ email });
 
     if (!user) {
-      return res.status(400).json({ message: "User not found" });
+      throw new customError (400,"email not found")
     }
 
     //   Hashing ( newPassword )
@@ -260,11 +243,8 @@ const resetPassword = async (req, res) => {
 
     res.json({ success: true, message: "Password changed successfully!" });
 
-  } catch (error) {
-    console.error("Error:", error);
-    res.status(500).json({ success: false, message: "Internal Server Error" });
-  }
-};
+  }; 
+
 
 
 
