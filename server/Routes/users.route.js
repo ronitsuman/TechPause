@@ -11,7 +11,7 @@ Route.get("/verify-email/:id/:token", verifyEmailController);
 
 Route.post("/login",loginController)
 
-Route.post("/check-email-otp" , emailChecker)
+Route.post("/check-email-otp" ,authChecker, emailChecker)
 
 Route.post("/verify-OTP" , verifyOTP )
 

@@ -4,6 +4,7 @@ import {sendEmail} from "../services/nodemailer.js";
 import {confirmationEmailTemplate, otpEmail} from "../htmltemplate/html.mail.js";
 import crypto from "crypto";
 import {generateOTP} from "../services/generateOtp.js";
+import jwt from "jsonwebtoken";
 
 import customError from "../util/Error.js";
 
@@ -137,6 +138,8 @@ const loginController = async (req, res) => {
         if (!result) {
           throw new customError (400,"Incoreect Password ")
         }
+        const token =jwt.sign({name:user.name,id:user._id},"ronit")
+        res.cookie("jwt",token)
 
         // Step 5: Sending success response 
         return res.status(200).json({
