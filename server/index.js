@@ -3,6 +3,7 @@ import dbConnect from "./database/dbConnect.js";
 import cors from "cors";
 import env from "dotenv"
 import {Route} from "./Routes/users.route.js"
+import cookieParser from "cookie-parser"
 
 
 env.config(); // to use env variables
@@ -29,7 +30,7 @@ const PORT = process.env.PORT ||5000;
 app.use(cors());
 app.use(express.json());
 
-
+app.use(cookieParser())
  
 app.use("/api",Route)
 

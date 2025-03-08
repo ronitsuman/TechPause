@@ -154,6 +154,7 @@ const loginController = async (req, res) => {
 const emailChecker = async (req, res) => {
 
     const { email } = req.body;
+    const{name,id}=req.user;
 
     // Check if email exists in DB
     const user = await User.findOne({ email }); 
